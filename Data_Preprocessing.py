@@ -60,4 +60,17 @@ print (dataframe.info())                                                        
 dataframe.n_hos_beds = dataframe.n_hos_beds.fillna(dataframe.n_hos_beds.mean())
 print (dataframe.info())                                                          #Again check is it filled or not
 
+#Variable Trasnformation
+_ = sns.jointplot(x="crime_rate", y="price", data=dataframe)                      #Look at scatter plot its look like log curv
+dataframe.crime_rate = np.log(1+dataframe.crime_rate)
+_ = sns.jointplot(x="crime_rate", y="price", data=dataframe)                      #Look again at scatter plot, relationship looks more linear.
 
+#As we notice there are 4 employment center dist1, dist2, dist3, dist4 in our data, let take average of it and make new column
+dataframe['avg_dist'] = (dataframe.dist1+dataframe.dist2+dataframe.dist3+dataframe.dist4)/4
+del dataframe['dist1']                                                            #Deleting 4 employment column because we have taken its average
+del dataframe['dist2']  
+del dataframe['dist3']  
+del dataframe['dist4']
+del dataframe['bus_ter']                                                          #because it has on 1 type of value.
+dataframe.describe()                                                              #Look at dataframe now
+dataframe.info()
