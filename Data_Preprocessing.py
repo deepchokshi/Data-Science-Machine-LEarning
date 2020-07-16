@@ -74,3 +74,17 @@ del dataframe['dist4']
 del dataframe['bus_ter']                                                          #because it has on 1 type of value.
 dataframe.describe()                                                              #Look at dataframe now
 dataframe.info()
+
+#Dummy Variable
+dataframe = pd.get_dummies(dataframe)
+dataframe.head() #Look at dataset now airpot_No is not needed and waterbody_None aslo
+del dataframe['airport_NO']
+del dataframe['waterbody_None']
+dataframe.head()
+
+#Correlation matrix
+dataframe.corr() #Take a observation we can see that park and air_qual is hoghly corelated so it make cause multi co-linearality
+del dataframe['parks']
+dataframe.head()
+
+#Data Preprocessing Completed
