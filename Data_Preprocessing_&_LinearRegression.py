@@ -9,6 +9,8 @@ Created on Mon Jul 13 17:09:12 2020
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import statsmodels.api as sn
+from sklearn.linear_model import LinearRegression
 
 #Importing CSV file and store into dataframe.
 dataframe = pd.read_csv("House_Price.csv", header=0)
@@ -66,7 +68,8 @@ dataframe.crime_rate = np.log(1+dataframe.crime_rate)
 _ = sns.jointplot(x="crime_rate", y="price", data=dataframe)                      #Look again at scatter plot, relationship looks more linear.
 
 #As we notice there are 4 employment center dist1, dist2, dist3, dist4 in our data, let take average of it and make new column
-dataframe['avg_dist'] = (dataframe.dist1+dataframe.dist2+dataframe.dist3+dataframe.dist4)/4
+dataframe['avg_dist'] = (dataframe.dist1+dataframe.dist2+dataframe.dist3+
+                         dataframe.dist4)/4
 del dataframe['dist1']                                                            #Deleting 4 employment column because we have taken its average
 del dataframe['dist2']  
 del dataframe['dist3']  
@@ -83,8 +86,25 @@ del dataframe['waterbody_None']
 dataframe.head()
 
 #Correlation matrix
-dataframe.corr() #Take a observation we can see that park and air_qual is hoghly corelated so it make cause multi co-linearality
+dataframe.corr()                                                                 #Take a observation we can see that park and air_qual is hoghly corelated so it make cause multi co-linearality
 del dataframe['parks']
 dataframe.head()
-
 #Data Preprocessing Completed
+
+#Simple Linear Regression using statsmodel
+X = sn.add_constant(dataframe["room_num"])
+lm = sn.OLS(dataframe["price"],X).fit()
+lm.summary()
+
+#Linear Regession usinf sklearn
+y = dataframe["price"]
+X = dataframe[["room_num"]]                                                      #x should be a 2D array so we use[[]]
+lm2 = LinearRegression()                                                         #Creating Linear Regration object
+lm2.fit(X,y)
+print (lm2.intercept_, lm2.coef_)
+
+help(lm2)                                                                        #to get help regarding object
+
+lm2.predict(X)                                                                   #predicting the values of y on model which we generated
+sns.jointplot(x= dataframe['room_num'], y= dataframe['price'], data= dataframe, kind='reg')
+
